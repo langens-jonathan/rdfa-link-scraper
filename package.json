@@ -1,0 +1,15 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan Langens <flowofcontrol@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdom": "^13.0.0",
+    "node-html-parser": "^1.1.11"
+  }
+}
