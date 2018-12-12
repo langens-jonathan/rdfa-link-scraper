@@ -14,18 +14,18 @@ function htmlLoadedFunction(result, htmlFilename, reportFilename) {
     // TODO save file and results in triple store
 }
 
-function loadHTMLForURL(assignment) {
+function loadHTMLForURL(page_to_scrape) {
     return new Promise(function(resolve, reject) {
         (async () => {
             const crawler = await HCCrawler.launch({
                 args: ['--no-sandbox'],
                 evaluatePage: evaluateFunction,
                 onSuccess: (result) => {
-                    htmlLoadedFunction(result, assignment.htmlFilename, assignment.reportFilename);
-                    resolve(assignment);
+                    htmlLoadedFunction(result, page_to_scrape.htmlFilename, page_to_scrape.reportFilename);
+                    resolve(page_to_scrape);
                 }
             });
-            await crawler.queue(assignment.url);
+            await crawler.queue(page_to_scrape.url);
             await crawler.onIdle();
             await crawler.close();
         })();
