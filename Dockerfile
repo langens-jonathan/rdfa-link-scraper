@@ -8,7 +8,9 @@ RUN yarn add body-parser
 # uuid.js
 RUN yarn add uuid
 
-# RUN yarn add node-html-parser
+# the node html parser
+RUN yarn add node-html-parser
+
 # jsdom.js
 RUN yarn add jsdom
 
