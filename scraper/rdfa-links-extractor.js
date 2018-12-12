@@ -5,19 +5,19 @@ const { analyse } = require('./marawa/rdfa-context-scanner');
 function check_block(block) {
     let links_found = [];
     if("rdfaAttributes" in block) {
-        console.log(block["rdfaAttributes"]);
+        // console.log(block["rdfaAttributes"]);
         if("rel" in block["rdfaAttributes"] && block["rdfaAttributes"]["rel"] !== null) {
-            links_found.add(block["rdfaAttributes"]["rel"]);
+            links_found.push(block["rdfaAttributes"]["rel"]);
         }
     }
     if("children" in block) {
         for(let cIndex in block["children"]) {
             let child = block["children"][cIndex];
-            links_found.concat(check_block(child));
+            links_found = links_found.concat(check_block(child));
         }
     }
     for(let blockIndex in block["richNode"]) {
-        links_found.concat(check_block(block["richNode"][blockIndex]));
+        links_found = links_found.concat(check_block(block["richNode"][blockIndex]));
     }
     return links_found;
 }
@@ -30,7 +30,7 @@ function extract_rdfa_links_from_file(filename) {
         // I probably want to delete the bit below...
         let links_found = [];
         for(let block_index in analysis) {
-            links_found.concat(check_block(analysis[block_index]));
+            links_found = links_found.concat(check_block(analysis[block_index]));
         }
         resolve(links_found);
     });
