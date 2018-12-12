@@ -9,7 +9,9 @@
   "author": "Jonathan Langens <flowofcontrol@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "express-http-context": "^1.2.0",
     "jsdom": "^13.0.0",
-    "node-html-parser": "^1.1.11"
+    "node-html-parser": "^1.1.11",
+    "sparql-client-2": "^0.6.3"
   }
 }
