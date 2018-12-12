@@ -1,35 +1,31 @@
-const HCCrawler = require('headless-chrome-crawler');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
 
-function evaluateFunction() {
-    return(document.body.innerHTML);
-}
-
-function htmlLoadedFunction(result, htmlFilename, reportFilename) {
-    console.log("[*] HTML structure loaded");
-    fs.writeFileSync("/data/" + htmlFilename, result.result);
-    fs.writeFileSync("/data/" + reportFilename, result);
-    console.log("[*] HTML written to file " + htmlFilename + " .");
-    console.log("[*] Report written to file " + reportFilename + " .");
+function htmlLoadedFunction(html, filename) {
+    fs.writeFileSync("/data/" + filename, html);
+    console.log("[*] HTML written to file " + filename + " .");
     // TODO save file and results in triple store
 }
 
-function loadHTMLForURL(page_to_scrape) {
-    return new Promise(function(resolve, reject) {
-        (async () => {
-            const crawler = await HCCrawler.launch({
-                args: ['--no-sandbox'],
-                evaluatePage: evaluateFunction,
-                onSuccess: (result) => {
-                    htmlLoadedFunction(result, page_to_scrape.htmlFilename, page_to_scrape.reportFilename);
-                    resolve(page_to_scrape);
-                }
-            });
-            await crawler.queue(page_to_scrape.url);
-            await crawler.onIdle();
-            await crawler.close();
-        })();
-    });
+async function scrape_page(page_to_scrape) {
+    const browser = await puppeteer.launch({args: ['--no-sandbox'], headless: true});
+    const page = await browser.newPage();
+    await page.goto(page_to_scrape.url, {waitUntil: 'networkidle0'});
+    const html = await page.content(); // serialized HTML of page DOM.
+    await browser.close();
+    page_to_scrape.html = html;
+    return page_to_scrape;
 }
 
-module.exports = { evaluateFunction, htmlLoadedFunction, loadHTMLForURL } ;
+
+function loadHTMLForURL(page_to_scrape) {
+    let promise = new Promise(function(resolve, reject) {
+        resolve(scrape_page(page_to_scrape));
+    });
+    promise.then(function(scraped_page) {
+        htmlLoadedFunction(scraped_page.html, scraped_page.filename);
+    });
+    return promise;
+}
+
+module.exports = { loadHTMLForURL } ;

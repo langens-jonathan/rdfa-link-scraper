@@ -5,7 +5,7 @@ const { analyse } = require('./marawa/rdfa-context-scanner');
 function check_block(block) {
     let links_found = [];
     if("rdfaAttributes" in block) {
-        // console.log(block["rdfaAttributes"]);
+        console.log(block["rdfaAttributes"]);
         if("rel" in block["rdfaAttributes"] && block["rdfaAttributes"]["rel"] !== null) {
             links_found.add(block["rdfaAttributes"]["rel"]);
         }

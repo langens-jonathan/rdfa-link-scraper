@@ -26,13 +26,13 @@ app.post('/scrape', (req, res) => {
     let page_to_scrape = {
         url: req.body.url,
         uuid: uuid,
-        htmlFilename: uuid + ".html",
-        reportFilename: uuid + ".report"
+        filename: uuid + ".html",
+        minimum_time_for_rescraping: MINIMUM_TIME_FOR_RESCRAPING
     };
     let loadHTMLPromise = scraper.loadHTMLForURL(page_to_scrape);
 
     loadHTMLPromise.then(function(scraped_page) {
-        rdfaLinks.extract_rdfa_links_from_file("/data/" + scraped_page.htmlFilename).then(function(links_found) {
+        rdfaLinks.extract_rdfa_links_from_file("/data/" + scraped_page.filename).then(function(links_found) {
             // do something with the discovered links
         });
     });
