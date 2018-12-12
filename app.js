@@ -10,7 +10,10 @@ const uuid4 = require('uuid/v4');
 const scraper =  require('./scraper/scraper');
 const rdfaLinks = require('./scraper/rdfa-links-extractor');
 
-const port = 3000; // default port
+const PORT = process.env.PORT;
+const MINIMUM_TIME_FOR_RESCRAPING = process.env.MINIMUM_TIME_FOR_RESCRAPING;
+
+console.log(process.env);
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -37,4 +40,4 @@ app.post('/scrape', (req, res) => {
     res.send(page_to_scrape);
 });
 
-app.listen(port, () => console.log(`Scraper listening on port ${port}!`));
+app.listen(PORT, () => console.log(`Scraper listening on port ${PORT}!`));
