@@ -31,7 +31,6 @@ ENV MU_SPARQL_ENDPOINT 'http://database:8890/sparql'
 ENV MU_APPLICATION_GRAPH 'http://mu.semte.ch/application'
 ENV NODE_ENV 'production'
 # the minimum age in seconds that need to have passed before a duplicate page will be added to the triple store
-# ENV MINIMUM_TIME_FOR_RESCRAPING 14400
-ENV MINIMUM_TIME_FOR_RESCRAPING 10
+ENV MINIMUM_TIME_FOR_RESCRAPING 14400000
 
 CMD node app.js

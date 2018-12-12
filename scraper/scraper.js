@@ -84,7 +84,6 @@ async function check_if_scraping_is_needed(page_to_scrape) {
                     SPARQL.PREDICATE_UUID + " \"" + pageResourceUUID + "\" ; " +
                     SPARQL.PREDICATE_URL + "\"" + page_to_scrape.url + "\" ." +
                     " } }");
-        page_has_to_be_scraped = true;
     } else {
         var pageResourceUUID = bindings[0]["page_uuid"]["value"];
         var pageResourceURI = bindings[0]["page_uri"]["value"];
@@ -123,4 +122,4 @@ async function check_if_scraping_is_needed(page_to_scrape) {
     }
 }
 
-module.exports = { loadHTMLForURL } ;
+module.exports = { check_if_scraping_is_needed, loadHTMLForURL } ;
