@@ -27,11 +27,27 @@ function get_href_attribute(block) {
     return undefined;
 }
 
+function check_ignore_file(link) {
+    let blacklisttext = fs.readFileSync("/app/sites.blacklist", "utf-8");
+    let blacklist = blacklisttext.split(/\r?\n/);
+    for(let index in blacklist) {
+        let site = blacklist[index];
+        if(link.indexOf(site) > -1) {
+            console.log("[!] Site (" + link + ")is being skipped because of blacklist entry: " + site);
+            return false;
+        }
+    }
+    return true;
+}
+
 function is_valid_link(link) {
     if(link === "#") {
         return false;
     }
     if(link.endsWith(".css")) {
+        return false;
+    }
+    if(!check_ignore_file(link)){
         return false;
     }
     return true;
