@@ -28,7 +28,7 @@ function get_href_attribute(block) {
 }
 
 function check_ignore_file(link) {
-    let blacklisttext = fs.readFileSync("/app/sites.blacklist", "utf-8");
+    let blacklisttext = fs.readFileSync(process.env.BLACKLIST_FILE, "utf-8");
     let blacklist = blacklisttext.split(/\r?\n/);
     for(let index in blacklist) {
         let site = blacklist[index];
