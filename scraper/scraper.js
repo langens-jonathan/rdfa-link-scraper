@@ -44,10 +44,37 @@ function htmlLoadedFunction(page_to_scrape) {
                  " } }");
 }
 
+async function clickOnLink(page, link) {
+    const linkHandlesArray = await page.$x('//a');
+    const linkHandlers = await Promise.all(linkHandlesArray.map(async (handle) => {
+        let url = await handle.getProperty('href');
+        return {
+            url: url,
+            handle: handle
+        };
+    }));
+
+    for(let index in linkHandlers) {
+        let handler = linkHandlers[index];
+        let href = await handler.url.jsonValue();
+        if(href.indexOf(link) > -1) {
+            await handler.handle.click();
+            await page.waitForNavigation({waitUntil: 'networkidle0'});
+        }
+    }
+}
+
 async function scrape_page(page_to_scrape) {
     const browser = await puppeteer.launch({args: ['--no-sandbox'], headless: true});
     const page = await browser.newPage();
     await page.goto(page_to_scrape.url, {waitUntil: 'networkidle0'});
+
+    let page_content = await page.content();
+    for(let bcindex in page_to_scrape.breadcrumbs) {
+        let breadcrumb = page_to_scrape.breadcrumbs[bcindex];
+        await clickOnLink(page, breadcrumb);
+    }
+
     const html = await page.content(); // serialized HTML of page DOM.
     await browser.close();
     page_to_scrape.html = html;

@@ -26,12 +26,17 @@ app.use(bodyParser.json());
 
 app.post('/scrape', (req, res) => {
     let uuid = uuid4();
+    let breadcrumbs = [];
+    if(req.body.breadcrumbs) {
+        breadcrumbs = req.body.breadcrumbs;
+    }
     let page_to_scrape = {
         url: req.body.url,
         uuid: uuid,
         filename: uuid + ".html",
         scraped: false,
-        minimum_time_for_rescraping: MINIMUM_TIME_FOR_RESCRAPING
+        minimum_time_for_rescraping: MINIMUM_TIME_FOR_RESCRAPING,
+        breadcrumbs: breadcrumbs
     };
 
     console.log("[!] Scraping page: " + page_to_scrape.url);
@@ -49,7 +54,7 @@ app.post('/scrape', (req, res) => {
                 // do something with the discovered links
                 console.log("[*] RDFa links found:");
                 console.log(links_found);
-                process_link_array(links_found, scraped_page);
+                process_link_array(links_found, scraped_page, basePath);
             });
         }
     });
@@ -61,7 +66,7 @@ app.post('/scrape', (req, res) => {
             hrefLinks.extract_href_links_from_file("/data/" + scraped_page.filename, basePath).then(function(links_found) {
                 console.log("[*] HREF links found:");
                 console.log(links_found);
-                process_link_array(links_found, scraped_page);
+                process_link_array(links_found, scraped_page, basePath);
             });
         }
     });
@@ -69,9 +74,15 @@ app.post('/scrape', (req, res) => {
     res.send(page_to_scrape);
 });
 
-async function process_link_array(links, configuration) {
+
+/////
+////TODO NOW I WANT TO ADD THE LINK TO THE BREADCRUMBS AND REPLACE THE LINK WITH
+////// THE ORIGINAL URL
+////// THE SECOND THING I NEED IS TO FIX THE METHOD THAT CHECKS IF WE WANT TO
+////// RECALCULATE AS EVERY!!!!!!!!!!!!1 PAGE WILL NOW BASICLY START WITH THE SAME URL
+async function process_link_array(links, configuration, basePath) {
     for(let index in links) {
-        process_link(links[index], configuration);
+        process_link(links[index].replace(basePath, ""), configuration);
         await sleep(10000);
     }
 }
